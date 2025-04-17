@@ -10,7 +10,9 @@ android {
         applicationId "com.lemon.dialoglinkutil"
         archivesBaseName = "$applicationId"
         minSdk 30
+        targetSdk 28
     }
+
 
 
 

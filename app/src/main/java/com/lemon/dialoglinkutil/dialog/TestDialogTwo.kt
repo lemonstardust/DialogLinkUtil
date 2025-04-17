@@ -15,24 +15,25 @@ class TestDialogTwo() : DialogComponent {
 
     }
 
+    private var mLastShowTime = 0L
+
     override fun showDialog() {
         super.showDialog()
         val fragmentManager = (getContext() as FragmentActivity).supportFragmentManager
 
-        val dialog = FunctionDialogTwo().apply {
-            show(fragmentManager, "TestDialogTwo")
-
-            setTitle("request 1")
-            setContent("content 1")
-        }
-
+        FunctionDialogTwo.show(fragmentManager, "request 1", "content 1")
+        mLastShowTime = System.currentTimeMillis()
     }
 
     override fun priorityAndTag(): Pair<Int, String> {
-        return Pair(2, "TestDialogTwo")
+        return Pair(2, "FunctionDialogTwo")
     }
 
     override suspend fun isIntercept() = suspendCoroutine { result ->
+        if (timeLimit()) {
+            result.resume(false)
+            return@suspendCoroutine
+        }
         CoroutineScope(Dispatchers.IO).launch {
             val apiResult = apiGetString()
             result.resume(apiResult.length > 4)
@@ -44,5 +45,9 @@ class TestDialogTwo() : DialogComponent {
             val apiResult = MockApi.getStringApi("test1111")
             result.resume(apiResult)
         }
+    }
+
+    private fun timeLimit(): Boolean {
+        return System.currentTimeMillis() - mLastShowTime < 2 * 60 * 1000L
     }
 }

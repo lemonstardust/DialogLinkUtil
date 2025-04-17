@@ -2,6 +2,8 @@ package com.lemon.dialoglinkutil.dialog.base
 
 import android.content.Context
 import android.util.Log
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import com.lemon.dialoglinkutil.dialog.TestDialogOne
 import com.lemon.dialoglinkutil.dialog.TestDialogTwo
 import kotlinx.coroutines.CoroutineScope
@@ -27,8 +29,8 @@ object DialogManager {
     fun init(context: Context) {
 
         mContext = WeakReference(context)
-        addComponent(TestDialogOne())
-        addComponent(TestDialogTwo())
+//        addComponent(TestDialogOne())
+//        addComponent(TestDialogTwo())
     }
 
     fun getContext(): Context {
@@ -41,7 +43,8 @@ object DialogManager {
     }
 
     private fun sortDialogs() {
-        preDialogs.sortBy { it.priorityAndTag().first }
+        preDialogs.sortByDescending { it.priorityAndTag().first }
+        Log.i(TAG, "sortDialogs: $preDialogs")
     }
 
     fun onDialogShow(component: DialogComponent) {
@@ -53,7 +56,22 @@ object DialogManager {
     }
 
     fun checkCanShow() {
+        val showingTag = showingDialogs.getOrNull(0)?.priorityAndTag()?.second
+        if (showingTag.isNullOrBlank().not()) {
+            val fragment =
+                (getContext() as FragmentActivity).supportFragmentManager.findFragmentByTag(
+                    showingTag
+                )
+            if (fragment != null) {
+                Log.e(TAG, "onDialogShow: $showingTag")
+                return
+            } else {
+                showingDialogs.removeIf { it.priorityAndTag().second == showingTag }
+            }
+        }
+
         CoroutineScope(Dispatchers.Default).launch {
+
             val dialog = onGetNextDialog()
             if (dialog != null) {
                 dialog.showDialog()
@@ -70,10 +88,6 @@ object DialogManager {
         } else {
             CoroutineScope(Dispatchers.Default).launch {
                 for (dialog in preDialogs) {
-                    val str = withContext(coroutineContext) {
-                        return@withContext "sss"
-                    }
-
                     val task = async {
                         dialog.isIntercept()
                     }

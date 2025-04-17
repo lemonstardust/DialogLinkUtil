@@ -1,5 +1,6 @@
 package com.lemon.dialoglinkutil.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.lemon.dialoglinkutil.databinding.ActivityMainBinding
@@ -16,19 +17,34 @@ class MainActivity : AppCompatActivity() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        init()
-    }
 
-    private fun init() {
         DialogManager.init(this)
         DialogManager.apply {
             addComponent(TestDialogOne())
             addComponent(TestDialogTwo())
         }
+
+
+        init()
+    }
+
+    private fun init() {
+
         mBinding.apply {
+            init.setOnClickListener {
+
+            }
             btn.setOnClickListener {
-                DialogManager.checkCanShow()
+//                DialogManager.checkCanShow()
+                startActivity(Intent(this@MainActivity, SecondActivity::class.java))
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        DialogManager.checkCanShow()
+    }
+
+
 }

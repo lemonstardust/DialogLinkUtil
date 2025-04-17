@@ -1,5 +1,6 @@
 package com.lemon.dialoglinkutil.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,13 +19,18 @@ class FunctionDialogOne : DialogFragment(), View.OnClickListener {
 
     companion object {
 
-        fun show(fragmentManager: FragmentManager, bundle: Bundle? = null) {
+        fun show(fragmentManager: FragmentManager, title: String, content: String) {
             val fragment = FunctionDialogOne()
+            val bundle = Bundle().apply {
+                putString("title", title)
+                putString("content", content)
+            }
             fragment.arguments = bundle
-            Log.e("TAG", "fragemnt tag = ${fragment.tag}")
             fragmentManager.beginTransaction()
                 .add(fragment, FunctionDialogOne::class.java.simpleName)
                 .commit()
+            Log.e("TAG", "fragemnt tag = ${fragment.tag}")
+
         }
 
         fun close(fragmentManager: FragmentManager) {
@@ -50,16 +56,21 @@ class FunctionDialogOne : DialogFragment(), View.OnClickListener {
         init()
     }
 
+
     private fun init() {
         mBinding.cancel.setOnClickListener(this)
         mBinding.confirm.setOnClickListener(this)
+        val title = arguments?.getString("title") ?: ""
+        val content = arguments?.getString("content") ?: ""
+        setTitle(title)
+        setContent(content)
     }
 
-    fun setTitle(s: String) {
+    private fun setTitle(s: String) {
         mBinding.title.text = s
     }
 
-    fun setContent(s: String) {
+    private fun setContent(s: String) {
         mBinding.content.text = s
     }
 
@@ -78,17 +89,20 @@ class FunctionDialogOne : DialogFragment(), View.OnClickListener {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val window = dialog?.window
+        // 设置宽度为铺满
+        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+    }
+
 //    override fun show(manager: FragmentManager, tag: String?) {
 //        super.show(manager, tag)
-//    }
-
-
-
-//    override fun show() {
-//        super.show()
-////        window?.setBackgroundDrawableResource(android.R.color.transparent)
-//        window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        window?.setGravity(Gravity.CENTER)
 //    }
 
 

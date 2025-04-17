@@ -18,13 +18,18 @@ class FunctionDialogTwo : DialogFragment(), View.OnClickListener {
 
     companion object {
 
-        fun show(fragmentManager: FragmentManager, bundle: Bundle? = null) {
+        fun show(fragmentManager: FragmentManager, title: String, content: String) {
             val fragment = FunctionDialogTwo()
+            val bundle = Bundle().apply {
+                putString("title", title)
+                putString("content", content)
+            }
             fragment.arguments = bundle
-            Log.e("TAG", "fragemnt tag = ${fragment.tag}")
             fragmentManager.beginTransaction()
                 .add(fragment, FunctionDialogTwo::class.java.simpleName)
                 .commit()
+            Log.e("TAG", "fragemnt tag = ${fragment.tag}")
+
         }
 
         fun close(fragmentManager: FragmentManager) {
@@ -56,14 +61,18 @@ class FunctionDialogTwo : DialogFragment(), View.OnClickListener {
 
     private fun init() {
 //        mBinding.cancel.setOnClickListener(this)
+        val title = arguments?.getString("title") ?: ""
+        val content = arguments?.getString("content") ?: ""
+        setTitle(title)
+        setContent(content)
         mBinding.confirm.setOnClickListener(this)
     }
 
-    fun setTitle(s: String) {
+    private fun setTitle(s: String) {
         mBinding.title.text = s
     }
 
-    fun setContent(s: String) {
+    private fun setContent(s: String) {
         mBinding.content.text = s
     }
 
@@ -86,6 +95,12 @@ class FunctionDialogTwo : DialogFragment(), View.OnClickListener {
         super.show(manager, tag)
     }
 
+    override fun onStart() {
+        super.onStart()
+        val window = dialog?.window
+        // 设置宽度为铺满
+        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
 
 //    override fun show() {
 //        super.show()
