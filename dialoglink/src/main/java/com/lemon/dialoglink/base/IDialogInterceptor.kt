@@ -1,10 +1,8 @@
-package com.lemon.dialoglinkutil.dialog.base
+package com.lemon.dialoglink.base
 
 interface IDialogInterceptor {
 
     suspend fun isIntercept(): Boolean
-
-    fun proceed()
 
     fun priorityAndTag(): Pair<Int, String>
 }

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.lemon.dialoglinkutil.databinding.ActivityMainBinding
 import com.lemon.dialoglinkutil.dialog.TestDialogOne
 import com.lemon.dialoglinkutil.dialog.TestDialogTwo
-import com.lemon.dialoglinkutil.dialog.base.DialogManager
+import com.lemon.dialoglink.base.DialogManager
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,15 +1,11 @@
-package com.lemon.dialoglinkutil.dialog.base
+package com.lemon.dialoglink.base
 
 import android.content.Context
 import android.util.Log
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
-import com.lemon.dialoglinkutil.dialog.TestDialogOne
-import com.lemon.dialoglinkutil.dialog.TestDialogTwo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
@@ -29,8 +25,6 @@ object DialogManager {
     fun init(context: Context) {
 
         mContext = WeakReference(context)
-//        addComponent(TestDialogOne())
-//        addComponent(TestDialogTwo())
     }
 
     fun getContext(): Context {
@@ -72,7 +66,7 @@ object DialogManager {
 
         CoroutineScope(Dispatchers.Default).launch {
 
-            val dialog = onGetNextDialog()
+            val dialog = getDialog()
             if (dialog != null) {
                 dialog.showDialog()
             } else {
@@ -102,9 +96,7 @@ object DialogManager {
                     )
                     if (hasNextDialog) {
                         result.resume(dialog)
-//                    return@launch
                         return@launch
-//                        break
 
                     }
                 }
@@ -116,29 +108,40 @@ object DialogManager {
             }
         }
     }
+
+    private suspend fun getDialog(): DialogComponent? {
+        if (showingDialogs.isNotEmpty()) {
+            return null
+        } else {
+            return withContext(Dispatchers.Default) {
+                for (dialog in preDialogs) {
+                    Log.i(
+                        TAG,
+                        "start: ${System.currentTimeMillis() / 1000} ${dialog.priorityAndTag().second}}"
+                    )
+                    val task = async {
+                        dialog.isIntercept()
+                    }
+
+                    val hasNextDialog = task.await()
+
+                    Log.i(
+                        TAG,
+                        "endTask: ${System.currentTimeMillis() / 1000} ${dialog.priorityAndTag().second}}"
+                    )
+
+                    if (hasNextDialog) {
+                        return@withContext dialog
+                    }
+                }
+                Log.i(TAG, "NoDialog: ${System.currentTimeMillis() / 1000} NoDialog")
+                null
+            }
+
+        }
+    }
+
+
 }
 
 // 定义一个同时实现两个接口的类型
-interface DialogComponent : IDialogLifecycles, IDialogInterceptor {
-
-    override fun getContext(): Context {
-        return DialogManager.getContext()
-    }
-
-    override fun showDialog() {
-        onShow()
-    }
-
-    override fun onShow() {
-        DialogManager.onDialogShow(this)
-    }
-
-    override fun onDismiss() {
-        DialogManager.onDialogDismiss(this)
-    }
-
-    override suspend fun isIntercept(): Boolean {
-        return false
-//        it.resume(false)
-    }
-}

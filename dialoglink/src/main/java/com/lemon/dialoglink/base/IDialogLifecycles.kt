@@ -1,10 +1,12 @@
-package com.lemon.dialoglinkutil.dialog.base
+package com.lemon.dialoglink.base
 
 import android.content.Context
 
 interface IDialogLifecycles {
 
     fun getContext(): Context
+
+
     fun showDialog()
 
     fun onShow()

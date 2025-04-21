@@ -1,25 +1,18 @@
 package com.lemon.dialoglinkutil.dialog
 
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
+import com.lemon.dialoglink.base.DialogComponent
 import com.lemon.dialoglinkutil.data.UserInfo
-import com.lemon.dialoglinkutil.dialog.base.DialogComponent
 import com.lemon.dialoglinkutil.mock.MockApi
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.withContext
 
 class TestDialogOne : DialogComponent {
 
 
     private var mUserInfo: UserInfo? = null
 
-    override fun proceed() {
-
-    }
 
     override fun showDialog() {
         super.showDialog()
@@ -44,20 +37,15 @@ class TestDialogOne : DialogComponent {
         }
     }
 
-    override fun onDismiss() {
-        super.onDismiss()
-    }
 
-
-    override suspend fun isIntercept() = suspendCoroutine {
-        CoroutineScope(Dispatchers.IO).launch {
+    override suspend fun isIntercept(): Boolean {
+        return withContext(Dispatchers.IO) {
             val result = apiGetUserInfo("name1", 20, 1)
             delay(200)
-            it.resume(result.age > 18)
+            result.age > 18
         }
 
     }
-
 
 
     override fun priorityAndTag(): Pair<Int, String> {
@@ -65,11 +53,9 @@ class TestDialogOne : DialogComponent {
     }
 
     private suspend fun apiGetUserInfo(name: String, age: Int, sex: Int) =
-        suspendCoroutine { result ->
-            CoroutineScope(Dispatchers.IO).launch {
-                val apiResult = MockApi.getUserInfo(name, age, sex)
-                result.resume(apiResult)
-            }
-
+        withContext(Dispatchers.IO) {
+            val apiResult = MockApi.getUserInfo(name, age, sex)
+            apiResult
         }
+
 }
