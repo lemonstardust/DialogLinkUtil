@@ -8,6 +8,7 @@ import com.lemon.dialoglinkutil.dialog.TestDialogOne
 import com.lemon.dialoglinkutil.dialog.TestDialogTwo
 import com.lemon.dialoglink.base.DialogManager
 import com.lemon.dialoglinkutil.dialog.CommonConfirmDialog
+import com.lemon.dialoglinkutil.testITask.TaskActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,6 +43,9 @@ class MainActivity : AppCompatActivity() {
 
             showConfirm.setOnClickListener {
                 CommonConfirmDialog(this@MainActivity).show()
+            }
+            taskActivity.setOnClickListener {
+                startActivity(Intent(this@MainActivity, TaskActivity::class.java))
             }
         }
     }

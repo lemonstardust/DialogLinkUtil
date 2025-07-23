@@ -1,3 +1,4 @@
 rootProject.name = "dialogLinkUtil"
 include ':app'
 include ':dialoglink'
+include ':ITask'

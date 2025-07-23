@@ -30,6 +30,12 @@
             android:theme="@style/MyActivity">
 
         </activity>
+
+        <activity
+            android:name=".testITask.TaskActivity"
+            android:exported="true"
+            android:theme="@style/MyActivity" />
+
     </application>
 
 </manifest>

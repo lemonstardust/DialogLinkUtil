@@ -35,6 +35,7 @@ android {
     dependencies {
         implementation fileTree(include: ['*.jar'], dir: 'libs')//本地jar包依赖
         implementation project(':dialoglink')
+        implementation project(':ITask')
         implementation('androidx.constraintlayout:constraintlayout:2.1.4')
 //        implementation('androidx.activity:activity-ktx:1.9.2')
         implementation('com.google.android.material:material:1.5.0')
