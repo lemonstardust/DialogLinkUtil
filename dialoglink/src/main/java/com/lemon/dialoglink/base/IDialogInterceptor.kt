@@ -5,4 +5,6 @@ interface IDialogInterceptor {
     suspend fun isIntercept(): Boolean
 
     fun priorityAndTag(): Pair<Int, String>
+
+    fun isContinue(): Boolean
 }

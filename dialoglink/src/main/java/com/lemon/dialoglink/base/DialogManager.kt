@@ -47,6 +47,9 @@ object DialogManager {
 
     fun onDialogDismiss(component: DialogComponent) {
         showingDialogs.remove(component)
+        if (component.isContinue()) {
+            checkCanShow()
+        }
     }
 
     fun checkCanShow() {

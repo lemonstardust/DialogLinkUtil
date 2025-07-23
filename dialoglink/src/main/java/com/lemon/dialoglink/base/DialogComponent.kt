@@ -23,4 +23,8 @@ interface DialogComponent : IDialogLifecycles, IDialogInterceptor {
     override suspend fun isIntercept(): Boolean {
         return false
     }
+
+    override fun isContinue(): Boolean {
+        return false
+    }
 }

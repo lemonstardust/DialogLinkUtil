@@ -10,7 +10,8 @@ import com.lemon.dialoglinkutil.R
 import com.lemon.dialoglinkutil.databinding.DialogCommonConfirmBinding
 
 
-class CommonConfirmDialog(context: Context) : Dialog(context, R.style.BaseDialogStyle),IDialogLifecycles {
+class CommonConfirmDialog(context: Context) : Dialog(context, R.style.BaseDialogStyle),
+    IDialogLifecycles {
 
     private lateinit var mBinding: DialogCommonConfirmBinding
 
